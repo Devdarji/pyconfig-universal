@@ -1,0 +1,77 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyconfig-universal"
+version = "1.0.0"
+description = "Universal Python Configuration Management Library"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "PyConfig Universal Team", email = "team@pyconfig.dev"}
+]
+keywords = ["configuration", "config", "settings", "environment", "yaml", "json", "toml"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Systems Administration",
+]
+
+dependencies = [
+    "pyyaml>=6.0",
+    "tomli>=2.0;python_version<'3.11'",
+    "watchdog>=2.0",
+    "click>=8.0",
+]
+
+[project.optional-dependencies]
+redis = ["redis>=4.0"]
+consul = ["python-consul>=1.1"]
+crypto = ["cryptography>=3.0"]
+validation = ["jsonschema>=4.0"]
+http = ["requests>=2.25"]
+all = [
+    "redis>=4.0",
+    "python-consul>=1.1", 
+    "cryptography>=3.0",
+    "jsonschema>=4.0",
+    "requests>=2.25"
+]
+
+[project.scripts]
+pyconfig = "pyconfig.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/pyconfig-universal/pyconfig"
+Documentation = "https://pyconfig-universal.readthedocs.io"
+Repository = "https://github.com/pyconfig-universal/pyconfig"
+Issues = "https://github.com/pyconfig-universal/pyconfig/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["pyconfig*"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "--cov=pyconfig --cov-report=html --cov-report=term-missing"

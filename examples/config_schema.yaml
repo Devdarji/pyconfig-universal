@@ -1,0 +1,219 @@
+# Example configuration schema for PyConfig Universal
+
+# Application settings
+environment:
+  type: string
+  default: development
+  allowed_values: [development, staging, production]
+  description: Application environment
+  examples: [development, production]
+
+debug:
+  type: bool
+  default: true
+  description: Enable debug mode
+  environment_rules:
+    production:
+      default: false
+      forbidden_values: [true]
+
+# Server configuration
+server:
+  type: group
+  fields:
+    host:
+      type: string
+      default: "0.0.0.0"
+      description: Server host address
+      examples: ["0.0.0.0", "localhost"]
+    
+    port:
+      type: int
+      default: 8000
+      range: [1000, 65535]
+      description: Server port number
+      examples: [8000, 3000, 5000]
+    
+    workers:
+      type: int
+      default: 1
+      range: [1, 32]
+      description: Number of worker processes
+
+# Database configuration
+database:
+  type: group
+  fields:
+    url:
+      type: url
+      required: true
+      schemes: [postgresql, mysql, sqlite]
+      description: Database connection URL
+      examples: 
+        - "postgresql://user:pass@localhost:5432/mydb"
+        - "mysql://user:pass@localhost:3306/mydb"
+    
+    pool_size:
+      type: int
+      default: 10
+      range: [1, 100]
+      description: Database connection pool size
+    
+    timeout:
+      type: duration
+      default: "30s"
+      min: "1s"
+      max: "5m"
+      description: Database connection timeout
+
+# API configuration
+api:
+  type: group
+  fields:
+    key:
+      type: string
+      required: true
+      min_length: 32
+      secret: true
+      description: API authentication key
+    
+    timeout:
+      type: duration
+      default: "30s"
+      min: "1s"
+      max: "2m"
+      description: API request timeout
+    
+    rate_limit:
+      type: int
+      default: 1000
+      range: [1, 10000]
+      description: API rate limit per hour
+
+# Feature flags
+features:
+  type: list[str]
+  default: []
+  allowed_values: [authentication, caching, monitoring, analytics]
+  description: Enabled feature flags
+  examples: 
+    - [authentication, caching]
+    - [monitoring, analytics]
+
+# Email configuration
+email:
+  type: group
+  fields:
+    smtp_host:
+      type: string
+      default: localhost
+      description: SMTP server host
+    
+    smtp_port:
+      type: int
+      default: 587
+      range: [1, 65535]
+      description: SMTP server port
+    
+    username:
+      type: string
+      description: SMTP username
+    
+    password:
+      type: string
+      secret: true
+      description: SMTP password
+    
+    from_email:
+      type: email
+      required: true
+      description: Default sender email address
+
+# Logging configuration
+logging:
+  type: group
+  fields:
+    level:
+      type: string
+      default: INFO
+      allowed_values: [DEBUG, INFO, WARNING, ERROR, CRITICAL]
+      description: Logging level
+    
+    file:
+      type: path
+      description: Log file path
+      parent_exists: true
+      writable: true
+    
+    max_size:
+      type: string
+      default: "10MB"
+      description: Maximum log file size
+    
+    backup_count:
+      type: int
+      default: 5
+      range: [1, 100]
+      description: Number of backup log files
+
+# Cache configuration
+cache:
+  type: group
+  fields:
+    backend:
+      type: string
+      default: memory
+      allowed_values: [memory, redis, memcached]
+      description: Cache backend type
+    
+    url:
+      type: url
+      description: Cache server URL (for Redis/Memcached)
+      schemes: [redis, memcached]
+    
+    ttl:
+      type: duration
+      default: "1h"
+      min: "1m"
+      max: "24h"
+      description: Default cache TTL
+    
+    max_entries:
+      type: int
+      default: 1000
+      range: [100, 100000]
+      description: Maximum cache entries (for memory backend)
+
+# Security settings
+security:
+  type: group
+  fields:
+    secret_key:
+      type: string
+      required: true
+      min_length: 32
+      secret: true
+      description: Application secret key
+    
+    allowed_hosts:
+      type: list[str]
+      default: ["localhost"]
+      description: Allowed host names
+      examples:
+        - ["localhost", "127.0.0.1"]
+        - ["example.com", "www.example.com"]
+    
+    cors_origins:
+      type: list[str]
+      default: []
+      description: CORS allowed origins
+      examples:
+        - ["http://localhost:3000"]
+        - ["https://example.com"]
+    
+    session_timeout:
+      type: duration
+      default: "24h"
+      min: "1h"
+      max: "30d"
+      description: User session timeout

@@ -1,0 +1,63 @@
+# Example configuration file for PyConfig Universal
+
+# Application settings
+environment: development
+debug: true
+
+# Server configuration
+server:
+  host: "0.0.0.0"
+  port: 8000
+  workers: 4
+
+# Database configuration
+database:
+  url: "postgresql://user:password@localhost:5432/myapp"
+  pool_size: 20
+  timeout: "45s"
+
+# API configuration
+api:
+  key: "your-secret-api-key-here-32-chars-min"
+  timeout: "30s"
+  rate_limit: 5000
+
+# Feature flags
+features:
+  - authentication
+  - caching
+  - monitoring
+
+# Email configuration
+email:
+  smtp_host: "smtp.gmail.com"
+  smtp_port: 587
+  username: "your-email@gmail.com"
+  password: "your-app-password"
+  from_email: "noreply@yourapp.com"
+
+# Logging configuration
+logging:
+  level: INFO
+  file: "/var/log/myapp.log"
+  max_size: "50MB"
+  backup_count: 10
+
+# Cache configuration
+cache:
+  backend: redis
+  url: "redis://localhost:6379/0"
+  ttl: "2h"
+  max_entries: 10000
+
+# Security settings
+security:
+  secret_key: "your-super-secret-key-change-this-in-production"
+  allowed_hosts:
+    - "localhost"
+    - "127.0.0.1"
+    - "yourapp.com"
+  cors_origins:
+    - "http://localhost:3000"
+    - "https://yourapp.com"
+  session_timeout: "12h"
