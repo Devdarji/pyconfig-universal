@@ -4,8 +4,15 @@ import os
 import threading
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Callable, Union
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
+
+try:
+    from watchdog.observers import Observer
+    from watchdog.events import FileSystemEventHandler
+    HAS_WATCHDOG = True
+except ImportError:
+    HAS_WATCHDOG = False
+    Observer = None
+    FileSystemEventHandler = None
 
 from .exceptions import ConfigNotFoundError, ConfigValidationError
 from .schema import Schema
@@ -15,7 +22,7 @@ from ..loaders.file_loader import (
 )
 
 
-class ConfigFileHandler(FileSystemEventHandler):
+class ConfigFileHandler:
     """File system event handler for configuration file changes."""
     
     def __init__(self, config_instance: 'Config'):
@@ -191,9 +198,12 @@ class Config:
     
     def _start_file_watching(self) -> None:
         """Start watching configuration files for changes."""
+        if not HAS_WATCHDOG or not self._auto_reload:
+            return
+            
         if self._observer:
             return
-        
+
         self._observer = Observer()
         handler = ConfigFileHandler(self)
         
