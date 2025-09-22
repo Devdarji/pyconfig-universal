@@ -4,6 +4,10 @@ import os
 import threading
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Callable, Union
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
